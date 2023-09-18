@@ -21,7 +21,7 @@
   "feps": 5019,
   "pCharge": 0,
   "tBat": 0,
-  "pinv": 0,
+  "pinv": 420,
   "success": true,
   "_12KUsingGenerator": false,
   "pToGrid": 0,

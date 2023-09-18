@@ -30,7 +30,8 @@ public class InverterDataSerializationTest {
         assertEquals(90, inverterData.batteryCharge());
         assertEquals(420, inverterData.grid());
         assertEquals(0, inverterData.solar());
-        assertEquals(0, inverterData.backupPower());
+        assertEquals(0, inverterData.backupPowerUsage());
+        assertEquals(420, inverterData.normalPowerUsage());
     }
 
     @Test
@@ -42,17 +43,18 @@ public class InverterDataSerializationTest {
         assertEquals(82, inverterData.batteryCharge());
         assertEquals(0, inverterData.grid());
         assertEquals(0, inverterData.solar());
-        assertEquals(416, inverterData.backupPower());
+        assertEquals(416, inverterData.backupPowerUsage());
+        assertEquals(0, inverterData.normalPowerUsage());
     }
 
 
     @Test
     public void convertToJson() throws IOException {
-        InverterData data = new InverterData(90, 420, 0, 0);
+        InverterData data = new InverterData(90, 420, 0, 0, 12);
 
         String s = OBJECT_MAPPER.writeValueAsString(data);
 
-        assertEquals("{\"soc\":90,\"pToUser\":420,\"ppv\":0,\"peps\":0}", s);
+        assertEquals("{\"soc\":90,\"pToUser\":420,\"ppv\":0,\"peps\":0,\"pinv\":12}", s);
     }
 
 }

@@ -1,82 +1,34 @@
 package org.example;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.example.model.Cookie;
-import org.example.model.Header;
-import org.example.model.InverterData;
+import org.example.service.GuardService;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.http.HttpHeaders;
-import java.net.http.HttpResponse;
-import java.util.List;
-import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class InverterGuard {
 
-    private String sessionId;
-    private InverterGuardHttpClient httpClient;
+    private final GuardService guardService;
 
     public InverterGuard() {
-        this.sessionId = "";
-        this.httpClient = new InverterGuardHttpClient();
+        this.guardService = new GuardService();
     }
 
-    public String getSessionId() {
-        return sessionId;
-    }
+    public void run() {
 
-    public void setSessionId(String sessionId) {
-        this.sessionId = sessionId;
-    }
+            new Timer().scheduleAtFixedRate(new TimerTask() {
+                @Override
+                public void run() {
+                    System.out.println("the other thread to refreshing session...");
+                    guardService.login();
+                }
+                //  refresh session every 6 hours with 10 a second delay
+            } , 10000,  60000 * 60 * 6);
 
-
-    public void login() throws URISyntaxException, IOException, InterruptedException {
-        HttpResponse<String> loginResponse = this.httpClient.buildRequest(
-                "https://af.solarcloudsystem.com/WManage/web/login",
-                Map.of("account", "squareHome", "password", "Wilderness4"),
-                List.of(new Header("Content-type", "application/x-www-form-urlencoded"))
-        );
-
-
-        System.out.println(loginResponse.headers());
-
-        HttpHeaders headers = loginResponse.headers();
-        Map<String, List<String>> map = headers.map();
-
-        String cookies = map.get("set-cookie").get(0);
-        String sessionId = cookies.substring(cookies.indexOf("=") + 1, cookies.indexOf(";"));
-        System.out.println("set-cookie.sessionId: " + sessionId);
-        setSessionId(sessionId);
-    }
-
-    public void getInverterData() throws URISyntaxException, IOException, InterruptedException {
-        HttpResponse<String> inverterDataResponse = this.httpClient.buildRequest(
-                "https://af.solarcloudsystem.com/WManage/api/inverter/getInverterRuntime?",
-                Map.of("serialNum", "2413053854"),
-                List.of(new Header("Content-type", "application/x-www-form-urlencoded")),
-                new Cookie("JSESSIONID", this.sessionId)
-        );
-
-//            HttpResponse<String> inverterDataResponse = getInverterData(sessionId);
-
-        System.out.println("inverter data: " + inverterDataResponse);
-        System.out.println("inverter data.headers: " + inverterDataResponse.headers());
-        System.out.println("inverter data.body: " + inverterDataResponse.body());
-        System.out.println("inverter data.request: " + inverterDataResponse.request());
-
-        InverterData inverterData = new ObjectMapper().convertValue(inverterDataResponse.body(), InverterData.class);
-
-        System.out.println(inverterData);
-
-//        return inverterDataResponse.body();
-    }
-
-
-    @Override
-    public String toString() {
-        return "InverterGuard{" +
-                "sessionId='" + sessionId + '\'' +
-                '}';
+            new Timer().scheduleAtFixedRate( new TimerTask() {
+                @Override
+                public void run() {
+                    guardService.runGuard();
+                }
+            } , 0, 30000);
     }
 }
