@@ -20,6 +20,7 @@ public class InverterGuard {
                 public void run() {
                     System.out.println("the other thread to refreshing session...");
                     guardService.login();
+                    // refresh session every 6 hours with 10 a second delay
                 }
                 //  refresh session every 6 hours with 10 a second delay
             } , 10000,  60000 * 60 * 6);
@@ -29,6 +30,7 @@ public class InverterGuard {
                 public void run() {
                     guardService.runGuard();
                 }
+                //  run the guard service every 30 seconds
             } , 0, 30000);
     }
 }
