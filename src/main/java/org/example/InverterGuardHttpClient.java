@@ -25,10 +25,8 @@ public class InverterGuardHttpClient {
     public HttpResponse<String> buildRequest(String uri, Map<String, Object> body, List<Header> headers) throws URISyntaxException, IOException, InterruptedException {
 
         try {
-            HttpRequest.Builder requestBuilder = HttpRequest.newBuilder();
+            HttpRequest.Builder requestBuilder = createAndSetBuilder(uri, headers);
 
-            requestBuilder.uri(new URI(uri));
-            headers.forEach(header -> requestBuilder.header(header.name(), header.value()));
             requestBuilder.POST(HttpRequest.BodyPublishers.ofString(formEncodeBody(body)));
 
             CookieHandler.setDefault(new CookieManager());
@@ -52,10 +50,8 @@ public class InverterGuardHttpClient {
     public HttpResponse<String> buildRequest(String uri, Map<String, Object> body, List<Header> headers, Cookie cookie) throws URISyntaxException, IOException, InterruptedException {
 
         try {
-            HttpRequest.Builder requestBuilder = HttpRequest.newBuilder();
+            HttpRequest.Builder requestBuilder = createAndSetBuilder(uri, headers);
 
-            requestBuilder.uri(new URI(uri));
-            headers.forEach(header -> requestBuilder.header(header.name(), header.value()));
             requestBuilder.POST(HttpRequest.BodyPublishers.ofString(formEncodeBody(body)));
 
             CookieHandler.setDefault(new CookieManager());
@@ -84,10 +80,8 @@ public class InverterGuardHttpClient {
     public void buildRequest(String uri, List<Header> headers) throws URISyntaxException, IOException, InterruptedException {
 
         try {
-            HttpRequest.Builder requestBuilder = HttpRequest.newBuilder();
+            HttpRequest.Builder requestBuilder = createAndSetBuilder(uri, headers);
 
-            requestBuilder.uri(new URI(uri));
-            headers.forEach(header -> requestBuilder.header(header.name(), header.value()));
             requestBuilder.POST(HttpRequest.BodyPublishers.noBody());
 
             httpClientBuilder
@@ -103,6 +97,14 @@ public class InverterGuardHttpClient {
             sendException.printStackTrace();
             throw sendException;
         }
+    }
+
+    private static HttpRequest.Builder createAndSetBuilder(String uri, List<Header> headers) throws URISyntaxException {
+        HttpRequest.Builder requestBuilder = HttpRequest.newBuilder();
+
+        requestBuilder.uri(new URI(uri));
+        headers.forEach(header -> requestBuilder.header(header.name(), header.value()));
+        return requestBuilder;
     }
 
     private String formEncodeBody(Map<String, Object> parameters) {
