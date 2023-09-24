@@ -76,11 +76,11 @@ public class GuardService {
                 turnOffHeater();
             }
 
-            // if current solar yield is less than household usage
-            if (inverterData.solar() <= inverterData.normalPowerUsage() && inverterData.grid() == 0) {
+            // if current solar yield is less than what the household needs
+            if (inverterData.solar() <= inverterData.homeInverterDemand() && inverterData.gridImport() == 0) {
                 System.out.println("Solar yield is too low, turning off heater");
-                System.out.printf("inverterData.solar: %s,inverterData.normalPowerUsage: %s,inverterData.grid: %s \n",
-                        inverterData.solar(), inverterData.normalPowerUsage(), inverterData.grid());
+                System.out.printf("inverterData.solar: %s,inverterData.homeInverterDemand: %s,inverterData.gridImport: %s \n",
+                        inverterData.solar(), inverterData.homeInverterDemand(), inverterData.gridImport());
                 turnOffHeater();
             }
 

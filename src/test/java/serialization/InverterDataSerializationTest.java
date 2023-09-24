@@ -28,10 +28,10 @@ public class InverterDataSerializationTest {
         InverterData inverterData = OBJECT_MAPPER.readValue(fileInputStream, InverterData.class);
 
         assertEquals(90, inverterData.batteryCharge());
-        assertEquals(420, inverterData.grid());
+        assertEquals(420, inverterData.gridImport());
         assertEquals(0, inverterData.solar());
         assertEquals(0, inverterData.backupPowerUsage());
-        assertEquals(420, inverterData.normalPowerUsage());
+        assertEquals(420, inverterData.homeInverterDemand());
     }
 
     @Test
@@ -41,10 +41,10 @@ public class InverterDataSerializationTest {
         InverterData inverterData = OBJECT_MAPPER.readValue(fileInputStream, InverterData.class);
 
         assertEquals(82, inverterData.batteryCharge());
-        assertEquals(0, inverterData.grid());
+        assertEquals(0, inverterData.gridImport());
         assertEquals(0, inverterData.solar());
         assertEquals(416, inverterData.backupPowerUsage());
-        assertEquals(0, inverterData.normalPowerUsage());
+        assertEquals(0, inverterData.homeInverterDemand());
     }
 
 
